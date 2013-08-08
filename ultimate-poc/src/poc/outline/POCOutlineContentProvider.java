@@ -1,29 +1,23 @@
 package poc.outline;
 
-
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
+import poc.constants.POCConstants;
+
 public class POCOutlineContentProvider implements ITreeContentProvider {
-
-	private static final String ROOT_KEY = "ast";
-	private static final String CHILDREN_KEY = "children";
-
-	////////////////////////////////////////////////////////////////////////////
-	// Overrides
-	////////////////////////////////////////////////////////////////////////////
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-		return this.getList(inputElement, POCOutlineContentProvider.ROOT_KEY);
+		return this.getList(inputElement, POCConstants.KEY_ROOT);
 	}
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		return this.getList(parentElement, POCOutlineContentProvider.CHILDREN_KEY);
+		return this.getList(parentElement, POCConstants.KEY_CHILDREN);
 	}
 
 	@Override
@@ -33,12 +27,10 @@ public class POCOutlineContentProvider implements ITreeContentProvider {
 
 	@SuppressWarnings("unchecked")
 	private Object[] getList(Object element, String key) {
-		return ((List<Map<String, Object>>)((Map<String, Object>)element).get(key)).toArray();
+		return ((List<Map<String, Object>>) ((Map<String, Object>) element).get(key)).toArray();
 	}
 
-	////////////////////////////////////////////////////////////////////////////
 	// Unused
-	////////////////////////////////////////////////////////////////////////////
 
 	@Override
 	public void dispose() {

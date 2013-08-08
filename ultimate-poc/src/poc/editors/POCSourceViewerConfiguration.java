@@ -1,5 +1,6 @@
 package poc.editors;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jface.text.contentassist.IContentAssistant;
@@ -11,65 +12,63 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 
 import poc.Backend;
+import poc.bean.RequestBean;
+import poc.constants.POCConstants;
 import poc.document.POCDocumentPartitioner;
+import poc.exception.CustomException;
 
 public class POCSourceViewerConfiguration extends SourceViewerConfiguration {
 
-	// FIXME Should be taken from somewhere. But I don't see, as a mode is related to a document, and here the viewer configuration is agnostic of the document.
-	// A solution would be to take a reference to the editor, that way we could be able to request from it the document. Then the mode. But in that case, there is no pre-fetch of the configuration data. 
-	private static final String mode = "at";
-	
+	// FIXME Should be taken from somewhere. But I don't see, as a mode is
+	// related to a document, and here the viewer configuration is agnostic of
+	// the document.
+	// A solution would be to take a reference to the editor, that way we could
+	// be able to request from it the document. Then the mode. But in that case,
+	// there is no pre-fetch of the configuration data.
+
 	private Map<String, Object> configuration = null;
-	
-	private static final String CONFIGURATION_WIDTH_KEY = "configuration";
-	
+
 	public POCSourceViewerConfiguration() {
 		super();
 		try {
-			configuration = Backend.get().rpc(mode, CONFIGURATION_WIDTH_KEY);
+			RequestBean requestBean = new RequestBean();
+			requestBean.setModule(POCConstants.MODULE_EDITOR);
+			requestBean.setMethod(POCConstants.METHOD_CONFIGURATION);
+
+			configuration = Backend.get().rpc(requestBean);
+		} catch (CustomException e) {
+			configuration = new HashMap<String, Object>();
+			configuration.put(POCConstants.KEY_TAB_WIDTH, POCConstants.DEFAULT_TAB_WIDTH);
+			e.printStackTrace();
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
-	
-	
-	////////////////////////////////////////////////////////////////////////////
 	// General configuration
-	////////////////////////////////////////////////////////////////////////////
-	
-	private static final String TAB_WIDTH_KEY = "tabWidth";
-	
+
 	@Override
 	public int getTabWidth(ISourceViewer sourceViewer) {
 		if (configuration != null) {
-			return ((Double)configuration.get(TAB_WIDTH_KEY)).intValue();			
+			return ((Double) configuration.get(POCConstants.KEY_TAB_WIDTH)).intValue();
 		}
 		return super.getTabWidth(sourceViewer);
 	}
 
-	
-	
-	////////////////////////////////////////////////////////////////////////////
 	// Highlighting
-	////////////////////////////////////////////////////////////////////////////
-	
+
 	@Override
-	public IPresentationReconciler getPresentationReconciler(
-			ISourceViewer sourceViewer) {
+	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
 		PresentationReconciler reconciler = new PresentationReconciler();
 		DefaultDamagerRepairer dr = new DefaultDamagerRepairer(new POCTokenScanner());
-		reconciler.setDamager(dr, POCDocumentPartitioner.PARTITION_NAME);
-		reconciler.setRepairer(dr, POCDocumentPartitioner.PARTITION_NAME);
-		
+		reconciler.setDamager(dr, POCConstants.PARTITION_NAME);
+		reconciler.setRepairer(dr, POCConstants.PARTITION_NAME);
+
 		return reconciler;
 	}
 
-	
-	
-	////////////////////////////////////////////////////////////////////////////
 	// Pending implementation
-	////////////////////////////////////////////////////////////////////////////
-	
+
 	@Override
 	public IContentFormatter getContentFormatter(ISourceViewer sourceViewer) {
 		// TODO Auto-generated method stub
@@ -81,5 +80,5 @@ public class POCSourceViewerConfiguration extends SourceViewerConfiguration {
 		// TODO Auto-generated method stub
 		return super.getContentAssistant(sourceViewer);
 	}
-	
+
 }

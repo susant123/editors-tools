@@ -17,8 +17,6 @@ public class POCOutline extends ContentOutlinePage {
 		viewer.setLabelProvider(new POCOutlineLabelProvider());
 	}
 
-
-
 	public void setInput(Object input) {
 		this.input = input;
 		update();
@@ -32,7 +30,5 @@ public class POCOutline extends ContentOutlinePage {
 			}
 		}
 	}
-
-
 
 }

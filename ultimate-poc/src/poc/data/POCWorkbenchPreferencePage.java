@@ -7,8 +7,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-public class POCWorkbenchPreferencePage extends PreferencePage implements
-		IWorkbenchPreferencePage {
+public class POCWorkbenchPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
 	public POCWorkbenchPreferencePage() {
 		// TODO Auto-generated constructor stub
